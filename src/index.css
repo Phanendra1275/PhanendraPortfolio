@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Colors derived from reference */
+  --bg-dark: #050A45;
+  --bg-card: rgba(43, 56, 128, 0.4);
+  --bg-pill: rgba(255, 255, 255, 0.1);
+  --text-white: #ffffff;
+  --text-light-blue: #9BA4E5;
+  --accent-blue: #5468FF;
+  --accent-purple: #8B5CF6;
+  --border-glass: rgba(255, 255, 255, 0.15);
+  
+  /* Typography */
+  --font-main: 'Montserrat', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-dark);
+  color: var(--text-white);
+  min-height: 100vh;
+  overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
+}
+
+/* Background grid */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Background atmospheric glows */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 80% 20%, rgba(84, 104, 255, 0.3) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.2) 0%, transparent 40%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Reusable Glassmorphism */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+  border-radius: 24px;
+}

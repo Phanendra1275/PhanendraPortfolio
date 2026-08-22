@@ -1,0 +1,130 @@
+.experience {
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  position: relative;
+  z-index: 10;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(180deg, rgba(40, 50, 110, 0.5) 0%, rgba(5, 10, 69, 1) 100%);
+}
+
+.experience::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: 0;
+  width: 400px;
+  height: 100px;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.6) 0%, rgba(100, 150, 255, 0.3) 40%, transparent 70%);
+  filter: blur(20px);
+  z-index: 11;
+  pointer-events: none;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.header-line {
+  height: 2px;
+  background-color: var(--text-white);
+  width: 100%;
+  max-width: 500px;
+  flex: 1;
+  opacity: 1;
+}
+
+.experience-cards {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+
+.experience-card {
+  flex: 1;
+  padding: 40px 32px 60px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.experience-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.exp-year {
+  font-size: clamp(40px, 6vw, 64px);
+  font-weight: 900;
+  font-style: italic;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
+.exp-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 30px;
+}
+
+.exp-accent-line {
+  position: absolute;
+  bottom: 40px;
+  left: 32px;
+  width: 60px;
+  height: 4px;
+  background-color: var(--accent-blue);
+  border-radius: 2px;
+}
+
+@media (max-width: 1024px) {
+  .experience-cards {
+    flex-wrap: wrap;
+  }
+  .experience-card {
+    flex: 1 1 calc(50% - 12px);
+    padding: 32px 24px 50px;
+  }
+}
+
+@media (max-width: 900px) {
+  .exp-year {
+    font-size: 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .experience {
+    padding: 40px 20px;
+  }
+  .section-title {
+    font-size: clamp(20px, 5vw, 28px);
+  }
+  .experience-cards {
+    flex-direction: column;
+  }
+  .experience-card {
+    flex: 1 1 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

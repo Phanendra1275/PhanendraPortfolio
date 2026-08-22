@@ -1,0 +1,123 @@
+.software-section {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+.software-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.software-label {
+  background-color: #03062C;
+  color: var(--text-white);
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 1px;
+  padding: 10px 48px;
+  border-radius: 50px;
+  position: absolute;
+  top: 0; 
+  transform: translateY(-50%);
+  z-index: 20;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.software-capsule {
+  display: flex;
+  gap: 24px;
+  padding: 20px 60px;
+  border-radius: 60px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(180, 190, 220, 0.7); /* Frosted light grey/blue */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 30px 60px rgba(84, 104, 255, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.2);
+  margin-top: 30px;
+}
+
+.software-icon {
+  width: 75px;
+  height: 75px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.software-icon:hover {
+  transform: translateY(-5px);
+}
+
+.icon-text {
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.ae-icon {
+  background-color: #0F1442;
+  color: #9999FF;
+}
+
+.pr-icon {
+  background-color: #1A1F5C;
+  color: #9999FF;
+}
+
+.figma-icon {
+  background-color: #FFFFFF;
+}
+
+@media (max-width: 768px) {
+  .software-label {
+    top: -65px;
+    font-size: 16px;
+    padding: 8px 24px;
+  }
+  .software-capsule {
+    padding: 16px 32px;
+    border-radius: 40px;
+    gap: 16px;
+  }
+  
+  .software-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+  }
+  
+  .icon-text {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .software-capsule {
+    padding: 16px 20px;
+    gap: 12px;
+    border-radius: 30px;
+  }
+  
+  .software-label {
+    font-size: 14px;
+    padding: 6px 16px;
+    top: -55px;
+  }
+  
+  .software-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+  }
+  
+  .icon-text {
+    font-size: 18px;
+  }
+}

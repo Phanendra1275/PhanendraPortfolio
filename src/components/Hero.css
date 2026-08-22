@@ -1,0 +1,321 @@
+.hero {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  padding: 80px 40px 100px;
+  min-height: 85vh;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 10;
+}
+
+.hero-title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-title .porto {
+  font-size: clamp(60px, 8vw, 120px);
+  font-weight: 800;
+  letter-spacing: clamp(1px, 0.5vw, 4px);
+  background: linear-gradient(135deg, #ffffff 0%, #a4b1ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-title .folio {
+  font-size: clamp(60px, 8vw, 120px);
+  font-weight: 800;
+  letter-spacing: clamp(1px, 0.5vw, 4px);
+  background: linear-gradient(135deg, #ffffff 0%, #a4b1ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-name {
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 700;
+  margin-bottom: 16px;
+  margin-top: 16px;
+  opacity: 0;
+  animation: heroFadeUp 0.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-intro {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-light-blue);
+  max-width: 320px;
+  opacity: 0;
+  animation: heroFadeUp 0.8s 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-visuals {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.person-image-container {
+  position: absolute;
+  bottom: 0;
+  right: 10%;
+
+  width: 70%;
+  height: 120%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 6;
+  opacity: 0;
+  animation: heroFadeScale 1s 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-person-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+.floating-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border-radius: 20px;
+  z-index: 7;
+  animation: float 6s ease-in-out infinite;
+}
+
+.icon-placeholder {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 32px;
+}
+
+.icon-placeholder.ae { color: #9999FF; }
+.icon-placeholder.pr { color: #E89BFF; }
+
+.icon-ae {
+  top: 45%;
+  left: 15%;
+  --rot: -10deg;
+  background: rgba(30, 30, 80, 0.6);
+  border-color: rgba(153, 153, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(153, 153, 255, 0.2);
+}
+
+.icon-pr {
+  top: 25%;
+  right: 10%;
+  --rot: 15deg;
+  background: rgba(40, 20, 60, 0.6);
+  border-color: rgba(232, 155, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(232, 155, 255, 0.2);
+  animation-delay: -2s;
+}
+
+.icon-figma {
+  bottom: 5%;
+  right: 15%;
+  --rot: -5deg;
+  background: rgba(240, 240, 250, 0.9);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  padding: 24px;
+  animation-delay: -4s;
+}
+
+.icon-figma .icon-placeholder {
+  width: 90px;
+  height: 90px;
+}
+
+.hero-flare {
+  position: absolute;
+  bottom: 0;
+  right: -100px;
+  width: 400px;
+  height: 100px;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, rgba(100, 150, 255, 0.4) 40%, transparent 70%);
+  filter: blur(20px);
+  transform: rotate(-15deg);
+  z-index: 8;
+  opacity: 0.6;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(var(--rot)); }
+  50% { transform: translateY(-15px) rotate(var(--rot)); }
+  100% { transform: translateY(0px) rotate(var(--rot)); }
+}
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroFadeScale {
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 1439px) {
+  .person-image-container {
+    right: 5%;
+  }
+}
+
+@media (max-width: 1199px) {
+  .hero-content {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero-title .porto, .hero-title .folio { font-size: clamp(50px, 7vw, 80px); }
+  .hero-name { font-size: clamp(28px, 4vw, 40px); }
+  
+  .person-image-container {
+    right: 0%;
+    width: 60%;
+  }
+  
+  .icon-ae { left: 5%; --rot: -10deg; }
+  .icon-pr { right: 5%; --rot: 15deg; }
+  .icon-figma { right: 10%; --rot: -5deg; }
+  
+  .floating-icon { padding: 10px; }
+  .icon-placeholder { width: 50px; height: 50px; font-size: 28px; }
+  .icon-figma .icon-placeholder { width: 75px; height: 75px; }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    padding: 40px 20px 0;
+    align-items: center;
+  }
+  
+  .hero-content {
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .hero-intro {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .hero-visuals {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    margin-top: 20px;
+  }
+  
+  .person-image-container {
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    transform: none;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+  }
+  
+  .icon-ae { 
+    left: 10%; 
+    top: 30%; 
+    z-index: 5; /* Goes BEHIND the person to create 3D depth */
+    --rot: -15deg;
+    opacity: 0.8;
+  }
+  .icon-pr { 
+    right: 5%; 
+    top: 20%; 
+    z-index: 7; /* In front */
+    --rot: 10deg;
+  }
+  .icon-figma { 
+    right: 15%; 
+    bottom: 15%; 
+    z-index: 7; /* In front */
+    --rot: -5deg;
+  }
+  
+  .floating-icon {
+    padding: 8px;
+  }
+  .icon-placeholder {
+    width: 45px;
+    height: 45px;
+    font-size: 24px;
+  }
+  .icon-figma .icon-placeholder {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .hero-flare {
+    right: 50%;
+    transform: translateX(50%) rotate(0deg);
+    bottom: -20px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-visuals {
+    height: 280px;
+  }
+  
+  .icon-placeholder {
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+  }
+  
+  .icon-figma .icon-placeholder {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* Fallback / Performance optimization for iPad Mini 1 and older devices */
+@media (max-width: 1024px) and (hover: none) and (pointer: coarse) {
+  .hero-flare {
+    filter: blur(10px);
+    opacity: 0.3;
+  }
+  .glass-panel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(30, 30, 80, 0.95);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Simpler shadow */
+  }
+  /* NOTE: We removed animation: none from floating-icon because transform is cheap! */
+}

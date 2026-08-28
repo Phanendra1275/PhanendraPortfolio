@@ -268,18 +268,114 @@
   background: linear-gradient(to left, var(--bg-dark), transparent);
 }
 
+@media (max-width: 1024px) {
+  .feedback-card {
+    width: clamp(300px, 35vw, 360px);
+  }
+}
+
 @media (max-width: 768px) {
-  .feedback-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .feedback-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-right: 24px;
+  }
+  
+  .feedback-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .feedback-filter-btn {
+    flex-shrink: 0;
+  }
+
+  .feedback-track {
+    scroll-snap-type: x proximity;
+    touch-action: pan-y pan-x;
   }
   
   .feedback-card {
-    width: clamp(280px, 85vw, 400px);
-    padding: 24px;
+    scroll-snap-align: start;
+    width: 340px; /* tablet size */
+  }
+}
+
+@media (max-width: 600px) {
+  .feedback-section {
+    padding: 64px 0; /* Keep 0 for full bleed container, add padding to container */
+  }
+  
+  .feedback-container {
+    padding: 0 16px;
   }
 
+  .feedback-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .feedback-main-heading {
+    font-size: clamp(28px, 8vw, 38px);
+  }
+
+  .feedback-subtitle {
+    font-size: 15px;
+    max-width: 90%;
+  }
+
+  .add-feedback-btn {
+    width: fit-content;
+    min-height: 44px;
+    padding: 0 20px;
+    margin-top: 4px;
+  }
+
+  .feedback-track-container {
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+
+  .feedback-track {
+    gap: 16px;
+    padding: 10px 16px;
+    margin: -10px -16px;
+  }
+  
+  .feedback-card {
+    flex-basis: 86vw;
+    width: auto;
+    max-width: 360px;
+    padding: 24px;
+    min-height: 220px;
+  }
+
+  .feedback-message {
+    font-size: 15px;
+  }
+  
+  .author-avatar {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .feedback-author {
+    flex-wrap: wrap;
+  }
+  
+  .feedback-rating {
+    flex-basis: 100%;
+    margin-top: 6px;
+    padding-left: 56px;
+  }
+  
+  .star {
+    font-size: 16px;
+  }
+  
   .fade-overlay {
-    width: 40px;
+    width: 32px;
   }
 }

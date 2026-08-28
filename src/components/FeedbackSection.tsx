@@ -46,7 +46,8 @@ const FeedbackSection: React.FC<FeedbackSectionProps> = ({ onOpenFeedback }) => 
     let animationFrameId: number;
     
     const scroll = () => {
-      if (trackRef.current && !isDragging && !isHovered) {
+      const isMobile = window.innerWidth <= 768;
+      if (trackRef.current && !isDragging && !isHovered && !isMobile) {
         trackRef.current.scrollLeft += 0.5; // Adjust speed as needed
         
         // Reset scroll if we reached the end to loop (optional, but requested just auto-scroll)

@@ -4,6 +4,8 @@ import './ContactModal.css';
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialService?: string;
+  initialPackage?: string;
 }
 
 const SERVICES = [
@@ -13,26 +15,42 @@ const SERVICES = [
   'Thumbnail Designing',
   'Poster Designing',
   'Website Designing',
+  'Social Media Management',
   'Other'
 ];
 
-const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
+const PACKAGES = [
+  'None',
+  'Starter',
+  'Growth',
+  'Professional',
+  'Brand Starter Setup',
+  'Custom'
+];
+
+const ContactModal = ({ isOpen, onClose, initialService = '', initialPackage = '' }: ContactModalProps) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [mobile, setMobile] = useState('');
   const [service, setService] = useState('');
+  const [pkg, setPkg] = useState('');
   
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isPkgDropdownOpen, setIsPkgDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const pkgDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
+      }
+      if (pkgDropdownRef.current && !pkgDropdownRef.current.contains(event.target as Node)) {
+        setIsPkgDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -44,13 +62,15 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
       setName('');
       setEmail('');
       setMobile('');
-      setService('');
+      setService(initialService);
+      setPkg(initialPackage);
       setErrors({});
       setIsSubmitting(false);
       setIsSuccess(false);
       setIsDropdownOpen(false);
+      setIsPkgDropdownOpen(false);
     }
-  }, [isOpen]);
+  }, [isOpen, initialService, initialPackage]);
 
   if (!isOpen) return null;
 
@@ -96,6 +116,7 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
             email: email,
             phone: mobile,
             service: service,
+            package: pkg !== 'None' ? pkg : undefined,
             subject: 'New Portfolio Contact Submission'
           })
         });
@@ -222,6 +243,38 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                   </ul>
                 )}
                 {errors.service && <span className="error-text">{errors.service}</span>}
+              </div>
+
+              <div className="form-group dropdown-group" ref={pkgDropdownRef}>
+                <label>Package (Optional)</label>
+                <div 
+                  className={`custom-select ${isPkgDropdownOpen ? 'open' : ''}`}
+                  onClick={() => setIsPkgDropdownOpen(!isPkgDropdownOpen)}
+                >
+                  <span className={pkg && pkg !== 'None' ? 'selected-text' : 'placeholder-text'}>
+                    {pkg && pkg !== 'None' ? pkg : 'Select a package'}
+                  </span>
+                  <svg className="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+                
+                {isPkgDropdownOpen && (
+                  <ul className="dropdown-menu">
+                    {PACKAGES.map((p) => (
+                      <li 
+                        key={p} 
+                        onClick={() => {
+                          setPkg(p);
+                          setIsPkgDropdownOpen(false);
+                        }}
+                        className={pkg === p ? 'active' : ''}
+                      >
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
               {errors.form && <div className="error-text" style={{textAlign: 'center', marginBottom: '16px'}}>{errors.form}</div>}

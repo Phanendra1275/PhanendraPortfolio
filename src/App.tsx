@@ -4,12 +4,15 @@ import Experience from './components/Experience';
 import Software from './components/Software';
 import ProjectShowcase from './components/ProjectShowcase';
 import ContactModal from './components/ContactModal';
+import FeedbackSection from './components/FeedbackSection';
+import FeedbackModal from './components/FeedbackModal';
 import Footer from './components/Footer';
 import './App.css';
 import { useState } from 'react';
 
 function App() {
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   return (
     <div className="app-container">
@@ -21,11 +24,18 @@ function App() {
         <ProjectShowcase />
       </div>
       
+      <FeedbackSection onOpenFeedback={() => setIsFeedbackOpen(true)} />
+      
       <Footer onOpenContact={() => setIsContactOpen(true)} />
       
       <ContactModal 
         isOpen={isContactOpen} 
         onClose={() => setIsContactOpen(false)} 
+      />
+      
+      <FeedbackModal
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
       />
     </div>
   );

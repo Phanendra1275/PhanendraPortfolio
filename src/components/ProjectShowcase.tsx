@@ -33,7 +33,7 @@ const ProjectShowcase = () => {
       title: "Starter Pack",
       category: "UI Project",
       imageClass: "project-img-3",
-      videoUrl: "/assets/starter2.mp4",
+      videoUrl: "/assets/DEMO.mp4",
       posterUrl: "/assets/dashboard-ui-v2.jpg"
     },
 

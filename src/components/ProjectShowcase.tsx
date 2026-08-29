@@ -114,6 +114,22 @@ const ProjectShowcase = () => {
     return () => clearInterval(interval);
   }, [projects.length, playingVideoId]);
 
+  // Manage video playback for performance and smooth looping
+  useEffect(() => {
+    projects.forEach((project, index) => {
+      const videoEl = videoRefs.current[project.id];
+      if (videoEl) {
+        if (index === activeIndex && playingVideoId === null) {
+          // Play only the active center card when no modal is open
+          videoEl.play().catch(e => console.log("Auto-play prevented", e));
+        } else {
+          // Pause others to save resources and keep it smooth
+          videoEl.pause();
+        }
+      }
+    });
+  }, [activeIndex, playingVideoId, projects]);
+
   return (
     <section 
       className="project-showcase"
@@ -166,7 +182,6 @@ const ProjectShowcase = () => {
                       }}
                       src={project.videoUrl}
                       poster={project.posterUrl}
-                      autoPlay
                       loop
                       muted
                       playsInline

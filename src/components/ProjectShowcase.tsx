@@ -46,7 +46,7 @@ const ProjectShowcase = () => {
     },
     {
       id: 5,
-      title: "Branding",
+      title: "Ui Designing",
       category: "Visual Identity",
       imageClass: "project-img-5"
     },

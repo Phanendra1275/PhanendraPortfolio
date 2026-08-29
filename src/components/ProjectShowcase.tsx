@@ -39,15 +39,22 @@ const ProjectShowcase = () => {
 
     {
       id: 4,
-      title: "Branding",
-      category: "Visual Identity",
-      imageClass: "project-img-4"
+      title: "Real Estate Editing",
+      category: "Video Editing",
+      imageClass: "project-img-4",
+      videoUrl: "/assets/Demo 2.mp4",
     },
     {
       id: 5,
+      title: "Branding",
+      category: "Visual Identity",
+      imageClass: "project-img-5"
+    },
+    {
+      id: 6,
       title: "Landing Page",
       category: "UI/UX Design",
-      imageClass: "project-img-5"
+      imageClass: "project-img-6"
     }
   ];
 

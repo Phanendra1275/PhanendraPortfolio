@@ -138,6 +138,12 @@
   background-position: center;
   background-repeat: no-repeat;
 }
+.project-img-6 { 
+  background-image: url('/assets/dashboard-ui-v2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
 .premium-tag {
   position: absolute;

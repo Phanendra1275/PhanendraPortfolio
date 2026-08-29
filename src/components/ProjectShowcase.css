@@ -108,37 +108,18 @@
 }
 
 /* Specific card styles based on image */
-.project-img-1 { 
-  background-image: url('/assets/medical-video.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.project-img-2 { 
-  background-image: url('/assets/video-editing.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.project-img-3 { 
-  background-image: url('/assets/dashboard-ui-v2.jpg');
-  background-size: cover;
-  background-position: top center;
-  background-repeat: no-repeat;
-}
-.project-img-4 { 
-  background-image: url('/assets/raksha-bandhan.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.project-img-5 { 
+/* Removed background images to rely entirely on videos */
+.project-img-1 {}
+.project-img-2 {}
+.project-img-3 {}
+.project-img-4 {}
+.project-img-5 {
   background-image: url('/assets/vastra-alankara.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
-.project-img-6 { 
+.project-img-6 {
   background-image: url('/assets/dashboard-ui-v2.jpg');
   background-size: cover;
   background-position: center;

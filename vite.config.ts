@@ -10,4 +10,9 @@ export default defineConfig({
       targets: ['defaults', 'not IE 11', 'iOS >= 9']
     })
   ],
+  server: {
+    watch: {
+      ignored: ['**/public/assets/**/*.mp4', '**/public/assets/**/*.webm']
+    }
+  }
 })

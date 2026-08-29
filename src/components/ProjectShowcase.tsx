@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './ProjectShowcase.css';
 
 const ProjectShowcase = () => {
-  const [activeIndex, setActiveIndex] = useState(2);
+  const [activeIndex, setActiveIndex] = useState(1);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [playingVideoId, setPlayingVideoId] = useState<number | null>(null);
+  const videoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
 
   // Minimum swipe distance
   const minSwipeDistance = 50;
@@ -12,22 +14,29 @@ const ProjectShowcase = () => {
   const projects = [
     {
       id: 1,
-      title: "Mobile App",
+      title: "Growth Pack",
       category: "UI/UX Design",
-      imageClass: "project-img-1"
+      imageClass: "project-img-1",
+      videoUrl: "/assets/video2.mp4",
+      posterUrl: "/assets/medical-video.jpg"
     },
     {
       id: 2,
       title: "Video Editing",
       category: "Promo Video",
-      imageClass: "project-img-2"
+      imageClass: "project-img-2",
+      videoUrl: "/assets/video.mp4",
+      posterUrl: "/assets/medical-promo.jpg"
     },
     {
       id: 3,
-      title: "Dashboard",
+      title: "Starter Pack",
       category: "UI Project",
-      imageClass: "project-img-3"
+      imageClass: "project-img-3",
+      videoUrl: "/assets/starter2.mp4",
+      posterUrl: "/assets/dashboard-ui-v2.jpg"
     },
+
     {
       id: 4,
       title: "Branding",
@@ -43,12 +52,27 @@ const ProjectShowcase = () => {
   ];
 
   const handlePrev = () => {
+    setPlayingVideoId(null);
     setActiveIndex((prev) => (prev > 0 ? prev - 1 : projects.length - 1));
   };
 
   const handleNext = () => {
+    setPlayingVideoId(null);
     setActiveIndex((prev) => (prev < projects.length - 1 ? prev + 1 : 0));
   };
+
+  // Ensure body scroll is locked when modal is open
+  useEffect(() => {
+    if (playingVideoId !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [playingVideoId]);
 
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
@@ -74,12 +98,14 @@ const ProjectShowcase = () => {
 
   // Auto-play carousel loop
   useEffect(() => {
+    if (playingVideoId !== null) return; // Pause carousel if video is playing
+    
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev < projects.length - 1 ? prev + 1 : 0));
     }, 3500); // Change slide every 3.5 seconds
 
     return () => clearInterval(interval);
-  }, [projects.length]);
+  }, [projects.length, playingVideoId]);
 
   return (
     <section 
@@ -115,12 +141,48 @@ const ProjectShowcase = () => {
             <div 
               key={project.id} 
               className={`project-card pos-${position}`}
-              onClick={() => setActiveIndex(index)}
+              onClick={() => {
+                if (activeIndex !== index) {
+                  setPlayingVideoId(null);
+                  setActiveIndex(index);
+                }
+              }}
             >
               <div className={`project-image-placeholder ${project.imageClass}`}>
-                <div className="premium-tag">
-                  {project.title}
-                </div>
+                {project.videoUrl ? (
+                  <>
+                    <video
+                      ref={(el) => {
+                        if (el) {
+                          videoRefs.current[project.id] = el;
+                        }
+                      }}
+                      src={project.videoUrl}
+                      poster={project.posterUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="project-video"
+                      data-id={project.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (position === 0) {
+                          setPlayingVideoId(project.id);
+                        }
+                      }}
+                    />
+                    
+                    {/* Minimal interactive indicator (optional, you can add a small volume icon here if you want) */}
+                  </>
+                ) : null}
+
+                {/* Premium tag stays hidden while video is playing */}
+                {playingVideoId !== project.id && (
+                  <div className="premium-tag">
+                    {project.title}
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -151,6 +213,26 @@ const ProjectShowcase = () => {
           </text>
         </svg>
       </div>
+
+      {/* Video Modal Overlay */}
+      {playingVideoId !== null && (
+        <div className="video-modal-overlay" onClick={() => setPlayingVideoId(null)}>
+          <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="video-modal-close" onClick={() => setPlayingVideoId(null)} aria-label="Close video">
+              ✕
+            </button>
+            <video
+              src={projects.find(p => p.id === playingVideoId)?.videoUrl}
+              poster={projects.find(p => p.id === playingVideoId)?.posterUrl}
+              autoPlay
+              loop
+              controls
+              playsInline
+              className="modal-video-player"
+            />
+          </div>
+        </div>
+      )}
       
     </section>
   );

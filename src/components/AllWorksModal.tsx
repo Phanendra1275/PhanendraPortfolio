@@ -60,11 +60,34 @@ export const AllWorksModal: React.FC<AllWorksModalProps> = ({
 
   if (!isOpen) return null;
 
-  const categories = ['All', 'Video Editing', 'UI/UX Design'];
+  const categories = ['All', 'Video Reels', 'UI/UX Design'];
+
+  const getCategoryCount = (cat: string) => {
+    if (cat === 'All') return projects.length;
+    if (cat === 'Video Reels') {
+      return projects.filter(p => 
+        p.category.toLowerCase().includes('video') || 
+        p.title.toLowerCase().includes('video') || 
+        p.title.toLowerCase().includes('real estate') || 
+        p.category.toLowerCase().includes('promo')
+      ).length;
+    }
+    if (cat === 'UI/UX Design') {
+      return projects.filter(p => 
+        p.category.toLowerCase().includes('ui') || 
+        p.category.toLowerCase().includes('ux') || 
+        p.category.toLowerCase().includes('visual') || 
+        p.title.toLowerCase().includes('starter') || 
+        p.title.toLowerCase().includes('growth') || 
+        p.title.toLowerCase().includes('design')
+      ).length;
+    }
+    return 0;
+  };
 
   const filteredProjects = projects.filter((project) => {
     if (activeCategory === 'All') return true;
-    if (activeCategory === 'Video Editing') {
+    if (activeCategory === 'Video Reels') {
       return (
         project.category.toLowerCase().includes('video') ||
         project.title.toLowerCase().includes('video') ||
@@ -89,16 +112,14 @@ export const AllWorksModal: React.FC<AllWorksModalProps> = ({
     <div className="aw-backdrop" onClick={onClose}>
       <div className="aw-modal" onClick={(e) => e.stopPropagation()}>
         
-        {/* Minimal Header */}
+        {/* Luxury Minimal Header */}
         <div className="aw-header">
           <div className="aw-header-left">
+            <span className="aw-eyebrow">✦ PORTFOLIO ARCHIVE</span>
             <div className="aw-title-row">
-              <h2 className="aw-title">Works Archive</h2>
-              <span className="aw-count-badge">{projects.length} Works</span>
+              <h2 className="aw-title">Curated Works</h2>
+              <span className="aw-count-badge">0{projects.length} Projects</span>
             </div>
-            <p className="aw-subtitle">
-              Click any project to preview in full screen.
-            </p>
           </div>
 
           <div className="aw-header-right">
@@ -110,7 +131,8 @@ export const AllWorksModal: React.FC<AllWorksModalProps> = ({
                   className={`aw-filter-btn ${activeCategory === cat ? 'active' : ''}`}
                   onClick={() => setActiveCategory(cat)}
                 >
-                  {cat}
+                  <span>{cat}</span>
+                  <span className="aw-filter-count">{getCategoryCount(cat)}</span>
                 </button>
               ))}
             </nav>
@@ -129,82 +151,91 @@ export const AllWorksModal: React.FC<AllWorksModalProps> = ({
           </div>
         </div>
 
-        {/* 9:16 Vertical Cards Grid */}
-        <div className="aw-grid">
-          {filteredProjects.map((project, idx) => (
-            <div 
-              key={project.id} 
-              className="aw-card"
-              onClick={() => {
-                if (project.videoUrl) {
-                  onSelectProject(project);
-                } else if (project.imageUrl) {
-                  setSelectedImage(project.imageUrl);
-                }
-              }}
-            >
-              {/* Media Layer (Aspect Ratio 9:16) */}
-              <div className="aw-media-wrapper">
-                {project.videoUrl ? (
-                  <video
-                    src={project.videoUrl}
-                    poster={project.posterUrl}
-                    muted
-                    loop
-                    playsInline
-                    className="aw-video"
-                    onMouseEnter={(e) => {
-                      e.currentTarget.play().catch(() => {});
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.pause();
-                      e.currentTarget.currentTime = 0;
-                    }}
-                  />
-                ) : (
-                  <img 
-                    src={project.imageUrl || '/assets/vastra-alankara.png'} 
-                    alt={project.title} 
-                    className="aw-img" 
-                  />
-                )}
-
-                {/* Ambient Top Number */}
-                <span className="aw-index-number">0{idx + 1}</span>
-
-                {/* Center Hover Play/View Glyph */}
-                <div className="aw-hover-glyph">
+        {/* 9:16 Vertical Showcase Grid */}
+        <div className="aw-grid-container">
+          <div className="aw-grid">
+            {filteredProjects.map((project, idx) => (
+              <div 
+                key={project.id} 
+                className="aw-card"
+                style={{ animationDelay: `${idx * 0.06}s` }}
+                onClick={() => {
+                  if (project.videoUrl) {
+                    onSelectProject(project);
+                  } else if (project.imageUrl) {
+                    setSelectedImage(project.imageUrl);
+                  }
+                }}
+              >
+                {/* Media Canvas (9:16 Aspect Ratio) */}
+                <div className="aw-media-wrapper">
                   {project.videoUrl ? (
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <polygon points="7 4 19 12 7 20 7 4"></polygon>
-                    </svg>
+                    <video
+                      src={project.videoUrl}
+                      poster={project.posterUrl}
+                      muted
+                      loop
+                      playsInline
+                      className="aw-video"
+                      onMouseEnter={(e) => {
+                        e.currentTarget.play().catch(() => {});
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.pause();
+                        e.currentTarget.currentTime = 0;
+                      }}
+                    />
                   ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
+                    <img 
+                      src={project.imageUrl || '/assets/vastra-alankara.png'} 
+                      alt={project.title} 
+                      className="aw-img" 
+                    />
                   )}
-                </div>
 
-                {/* Bottom Vignette & Meta Overlay */}
-                <div className="aw-meta-overlay">
-                  <span className="aw-meta-category">{project.category}</span>
-                  <div className="aw-meta-bottom">
-                    <h3 className="aw-meta-title">{project.title}</h3>
-                    <span className="aw-meta-arrow">
+                  {/* Top Badge: Category & Index */}
+                  <div className="aw-top-bar">
+                    <span className="aw-category-pill">{project.category}</span>
+                    <span className="aw-index-number">0{idx + 1}</span>
+                  </div>
+
+                  {/* Center Hover Play Glyph */}
+                  <div className="aw-hover-glyph">
+                    {project.videoUrl ? (
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="7 4 19 12 7 20 7 4"></polygon>
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                      </svg>
+                    )}
+                  </div>
+
+                  {/* Bottom Vignette & Meta Overlay */}
+                  <div className="aw-meta-overlay">
+                    <div className="aw-meta-content">
+                      <h3 className="aw-meta-title">{project.title}</h3>
+                      <span className="aw-meta-desc">
+                        {project.videoUrl ? "Watch in iPhone Player" : "Open High-Res Design"}
+                      </span>
+                    </div>
+
+                    <div className="aw-meta-arrow">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="7" y1="17" x2="17" y2="7"></line>
                         <polyline points="7 7 17 7 17 17"></polyline>
                       </svg>
-                    </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Lightbox for static UI designs */}
+        {/* Lightbox for Static UI Designs */}
         {selectedImage && (
           <div className="aw-lightbox" onClick={() => setSelectedImage(null)}>
             <div className="aw-lightbox-content" onClick={(e) => e.stopPropagation()}>

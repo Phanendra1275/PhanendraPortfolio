@@ -124,6 +124,25 @@ const ProjectShowcase = () => {
       onTouchEnd={onTouchEndHandler}
     >
       
+      {/* Top Right "View All Works" Action Button */}
+      <div className="showcase-top-action">
+        <button 
+          className="view-all-works-btn top-right-btn" 
+          onClick={() => setIsAllWorksOpen(true)}
+          aria-label="View All Works"
+          title="Explore All Projects"
+        >
+          <span className="btn-glow" />
+          <span className="btn-text">View All Works</span>
+          <span className="btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </span>
+        </button>
+      </div>
+
       {/* Navigation Arrows */}
       <button className="nav-arrow prev-arrow" onClick={handlePrev} aria-label="Previous project">
         <div className="arrow-inner">
@@ -226,23 +245,7 @@ const ProjectShowcase = () => {
         </svg>
       </div>
 
-      {/* View All Works CTA Button */}
-      <div className="view-all-works-wrap">
-        <button 
-          className="view-all-works-btn" 
-          onClick={() => setIsAllWorksOpen(true)}
-          aria-label="View All Works"
-        >
-          <span className="btn-glow" />
-          <span className="btn-text">View All Works</span>
-          <span className="btn-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="7" y1="17" x2="17" y2="7"></line>
-              <polyline points="7 7 17 7 17 17"></polyline>
-            </svg>
-          </span>
-        </button>
-      </div>
+
 
       {/* Minimal Custom Video Modal */}
       {playingVideoId !== null && (

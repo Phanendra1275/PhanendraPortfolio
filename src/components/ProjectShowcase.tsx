@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import VideoPlayerModal from './VideoPlayerModal';
 import './ProjectShowcase.css';
 
 const ProjectShowcase = () => {
@@ -214,24 +215,12 @@ const ProjectShowcase = () => {
         </svg>
       </div>
 
-      {/* Video Modal Overlay */}
+      {/* Minimal Custom Video Modal */}
       {playingVideoId !== null && (
-        <div className="video-modal-overlay" onClick={() => setPlayingVideoId(null)}>
-          <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="video-modal-close" onClick={() => setPlayingVideoId(null)} aria-label="Close video">
-              ✕
-            </button>
-            <video
-              src={projects.find(p => p.id === playingVideoId)?.videoUrl}
-              poster={projects.find(p => p.id === playingVideoId)?.posterUrl}
-              autoPlay
-              loop
-              controls
-              playsInline
-              className="modal-video-player"
-            />
-          </div>
-        </div>
+        <VideoPlayerModal
+          project={projects.find(p => p.id === playingVideoId) || null}
+          onClose={() => setPlayingVideoId(null)}
+        />
       )}
       
     </section>

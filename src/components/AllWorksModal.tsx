@@ -60,18 +60,27 @@ export const AllWorksModal: React.FC<AllWorksModalProps> = ({
 
   if (!isOpen) return null;
 
-  const categories = ['All', 'Video Editing', 'UI/UX Design', 'Visual Identity'];
+  const categories = ['All', 'Video Editing', 'UI/UX Design'];
 
   const filteredProjects = projects.filter((project) => {
     if (activeCategory === 'All') return true;
     if (activeCategory === 'Video Editing') {
-      return project.category.toLowerCase().includes('video') || project.title.toLowerCase().includes('video') || project.title.toLowerCase().includes('real estate');
+      return (
+        project.category.toLowerCase().includes('video') ||
+        project.title.toLowerCase().includes('video') ||
+        project.title.toLowerCase().includes('real estate') ||
+        project.category.toLowerCase().includes('promo')
+      );
     }
     if (activeCategory === 'UI/UX Design') {
-      return project.category.toLowerCase().includes('ui') || project.category.toLowerCase().includes('ux') || project.title.toLowerCase().includes('starter') || project.title.toLowerCase().includes('growth');
-    }
-    if (activeCategory === 'Visual Identity') {
-      return project.category.toLowerCase().includes('visual') || project.category.toLowerCase().includes('identity') || project.title.toLowerCase().includes('design');
+      return (
+        project.category.toLowerCase().includes('ui') ||
+        project.category.toLowerCase().includes('ux') ||
+        project.category.toLowerCase().includes('visual') ||
+        project.title.toLowerCase().includes('starter') ||
+        project.title.toLowerCase().includes('growth') ||
+        project.title.toLowerCase().includes('design')
+      );
     }
     return true;
   });
@@ -79,55 +88,50 @@ export const AllWorksModal: React.FC<AllWorksModalProps> = ({
   return (
     <div className="aw-backdrop" onClick={onClose}>
       <div className="aw-modal" onClick={(e) => e.stopPropagation()}>
-        {/* Modal Header */}
+        
+        {/* Minimal Header */}
         <div className="aw-header">
-          <div className="aw-header-info">
-            <span className="aw-badge">PORTFOLIO ARCHIVE</span>
-            <h2 className="aw-title">All Featured Works</h2>
+          <div className="aw-header-left">
+            <div className="aw-title-row">
+              <h2 className="aw-title">Works Archive</h2>
+              <span className="aw-count-badge">{projects.length} Works</span>
+            </div>
             <p className="aw-subtitle">
-              Browse through my latest video edits, UI/UX designs, and visual branding projects.
+              Click any project to preview in full screen.
             </p>
           </div>
 
-          <button 
-            className="aw-close-btn" 
-            onClick={onClose} 
-            aria-label="Close all works"
-            title="Close (Esc)"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
+          <div className="aw-header-right">
+            {/* Category Filter Pills */}
+            <nav className="aw-filters">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  className={`aw-filter-btn ${activeCategory === cat ? 'active' : ''}`}
+                  onClick={() => setActiveCategory(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </nav>
 
-        {/* Category Filter Pills */}
-        <div className="aw-filters">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              className={`aw-filter-btn ${activeCategory === cat ? 'active' : ''}`}
-              onClick={() => setActiveCategory(cat)}
+            <button 
+              className="aw-close-btn" 
+              onClick={onClose} 
+              aria-label="Close all works"
+              title="Close (Esc)"
             >
-              {cat}
-              <span className="aw-filter-count">
-                {cat === 'All'
-                  ? projects.length
-                  : projects.filter((p) => {
-                      if (cat === 'Video Editing') return p.category.toLowerCase().includes('video') || p.title.toLowerCase().includes('video') || p.title.toLowerCase().includes('real estate');
-                      if (cat === 'UI/UX Design') return p.category.toLowerCase().includes('ui') || p.category.toLowerCase().includes('ux') || p.title.toLowerCase().includes('starter') || p.title.toLowerCase().includes('growth');
-                      if (cat === 'Visual Identity') return p.category.toLowerCase().includes('visual') || p.category.toLowerCase().includes('identity') || p.title.toLowerCase().includes('design');
-                      return true;
-                    }).length}
-              </span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
             </button>
-          ))}
+          </div>
         </div>
 
-        {/* Projects Grid */}
+        {/* 9:16 Vertical Cards Grid */}
         <div className="aw-grid">
-          {filteredProjects.map((project) => (
+          {filteredProjects.map((project, idx) => (
             <div 
               key={project.id} 
               className="aw-card"
@@ -139,69 +143,61 @@ export const AllWorksModal: React.FC<AllWorksModalProps> = ({
                 }
               }}
             >
-              {/* Media Thumbnail Container */}
-              <div className="aw-media-box">
+              {/* Media Layer (Aspect Ratio 9:16) */}
+              <div className="aw-media-wrapper">
                 {project.videoUrl ? (
-                  <>
-                    <video
-                      src={project.videoUrl}
-                      muted
-                      loop
-                      playsInline
-                      className="aw-card-video"
-                      onMouseEnter={(e) => {
-                        e.currentTarget.play().catch(() => {});
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.pause();
-                        e.currentTarget.currentTime = 0;
-                      }}
-                    />
-                    <div className="aw-play-badge">
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="6 4 20 12 6 20 6 4"></polygon>
-                      </svg>
-                      <span>Preview Reel</span>
-                    </div>
-                  </>
+                  <video
+                    src={project.videoUrl}
+                    poster={project.posterUrl}
+                    muted
+                    loop
+                    playsInline
+                    className="aw-video"
+                    onMouseEnter={(e) => {
+                      e.currentTarget.play().catch(() => {});
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.pause();
+                      e.currentTarget.currentTime = 0;
+                    }}
+                  />
                 ) : (
-                  <>
-                    <img 
-                      src={project.imageUrl || '/assets/vastra-alankara.png'} 
-                      alt={project.title} 
-                      className="aw-card-img" 
-                    />
-                    <div className="aw-play-badge aw-view-badge">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                      </svg>
-                      <span>View Design</span>
-                    </div>
-                  </>
+                  <img 
+                    src={project.imageUrl || '/assets/vastra-alankara.png'} 
+                    alt={project.title} 
+                    className="aw-img" 
+                  />
                 )}
 
-                <span className="aw-card-category">{project.category}</span>
-              </div>
+                {/* Ambient Top Number */}
+                <span className="aw-index-number">0{idx + 1}</span>
 
-              {/* Card Meta Content */}
-              <div className="aw-card-info">
-                <div className="aw-card-header">
-                  <h3 className="aw-card-title">{project.title}</h3>
-                  <span className="aw-arrow-indicator">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="7" y1="17" x2="17" y2="7"></line>
-                      <polyline points="7 7 17 7 17 17"></polyline>
+                {/* Center Hover Play/View Glyph */}
+                <div className="aw-hover-glyph">
+                  {project.videoUrl ? (
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="7 4 19 12 7 20 7 4"></polygon>
                     </svg>
-                  </span>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  )}
                 </div>
-                <p className="aw-card-desc">
-                  {project.description || "High-impact creative production with dynamic visual pacing and precision design."}
-                </p>
-                <div className="aw-card-footer">
-                  <span className="aw-cta-label">
-                    {project.videoUrl ? "Watch in iPhone Player" : "Open High-Res Design"}
-                  </span>
+
+                {/* Bottom Vignette & Meta Overlay */}
+                <div className="aw-meta-overlay">
+                  <span className="aw-meta-category">{project.category}</span>
+                  <div className="aw-meta-bottom">
+                    <h3 className="aw-meta-title">{project.title}</h3>
+                    <span className="aw-meta-arrow">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                      </svg>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -223,6 +219,7 @@ export const AllWorksModal: React.FC<AllWorksModalProps> = ({
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import VideoPlayerModal from './VideoPlayerModal';
+import AllWorksModal, { type ProjectItem } from './AllWorksModal';
 import './ProjectShowcase.css';
 
 const ProjectShowcase = () => {
@@ -7,19 +8,21 @@ const ProjectShowcase = () => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [playingVideoId, setPlayingVideoId] = useState<number | null>(null);
+  const [isAllWorksOpen, setIsAllWorksOpen] = useState<boolean>(false);
   const videoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
 
   // Minimum swipe distance
   const minSwipeDistance = 50;
 
-  const projects = [
+  const projects: ProjectItem[] = [
     {
       id: 1,
       title: "Growth Pack",
       category: "UI/UX Design",
       imageClass: "project-img-1",
       videoUrl: "/assets/video2.mp4",
-      posterUrl: "/assets/medical-video.jpg"
+      posterUrl: "/assets/medical-video.jpg",
+      description: "High-converting healthcare growth consultation reel & UI showcase."
     },
     {
       id: 2,
@@ -27,7 +30,8 @@ const ProjectShowcase = () => {
       category: "Promo Video",
       imageClass: "project-img-2",
       videoUrl: "/assets/video.mp4",
-      posterUrl: "/assets/medical-promo.jpg"
+      posterUrl: "/assets/medical-promo.jpg",
+      description: "Medical doctor promo video with dynamic motion pacing and captions."
     },
     {
       id: 3,
@@ -35,21 +39,24 @@ const ProjectShowcase = () => {
       category: "UI Project",
       imageClass: "project-img-3",
       videoUrl: "/assets/DEMO.mp4",
-      posterUrl: "/assets/dashboard-ui-v2.jpg"
+      posterUrl: "/assets/dashboard-ui-v2.jpg",
+      description: "Modern dark financial dashboard with charts, analytics, and animations."
     },
-
     {
       id: 4,
       title: "Real Estate Editing",
       category: "Video Editing",
       imageClass: "project-img-4",
       videoUrl: "/assets/Demo 2.mp4",
+      description: "Luxury interior walkthrough before & after color correction & grading."
     },
     {
       id: 5,
       title: "Ui Designing",
       category: "Visual Identity",
-      imageClass: "project-img-5"
+      imageClass: "project-img-5",
+      imageUrl: "/assets/vastra-alankara.png",
+      description: "Vastra Alankara ethnic fashion e-commerce mobile application design."
     }
   ];
 
@@ -199,7 +206,11 @@ const ProjectShowcase = () => {
       </button>
 
       {/* Bottom Arc */}
-      <div className="project-arc-container">
+      <div 
+        className="project-arc-container"
+        onClick={() => setIsAllWorksOpen(true)}
+        title="Explore all works"
+      >
         <svg viewBox="0 0 600 300" className="arc-svg">
           {/* Main filled arc background */}
           <path d="M 50 300 A 250 250 0 0 1 555 300" fill="#050833" stroke="#5C6CFF" strokeWidth="85" />
@@ -215,6 +226,24 @@ const ProjectShowcase = () => {
         </svg>
       </div>
 
+      {/* View All Works CTA Button */}
+      <div className="view-all-works-wrap">
+        <button 
+          className="view-all-works-btn" 
+          onClick={() => setIsAllWorksOpen(true)}
+          aria-label="View All Works"
+        >
+          <span className="btn-glow" />
+          <span className="btn-text">View All Works</span>
+          <span className="btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </span>
+        </button>
+      </div>
+
       {/* Minimal Custom Video Modal */}
       {playingVideoId !== null && (
         <VideoPlayerModal
@@ -222,6 +251,18 @@ const ProjectShowcase = () => {
           onClose={() => setPlayingVideoId(null)}
         />
       )}
+
+      {/* All Works Gallery Modal */}
+      <AllWorksModal
+        isOpen={isAllWorksOpen}
+        onClose={() => setIsAllWorksOpen(false)}
+        projects={projects}
+        onSelectProject={(selected) => {
+          if (selected.videoUrl) {
+            setPlayingVideoId(selected.id);
+          }
+        }}
+      />
       
     </section>
   );

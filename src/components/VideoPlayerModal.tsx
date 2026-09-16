@@ -23,7 +23,7 @@ const formatTime = (seconds: number): string => {
 
 export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ project, onClose }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const phoneRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef<HTMLDivElement | null>(null);
   const hideTimerRef = useRef<number | null>(null);
 
@@ -31,7 +31,7 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ project, onC
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const [buffered, setBuffered] = useState<number>(0);
-  const [volume, setVolume] = useState<number>(1);
+  const [volume, setVolume] = useState<number>(0.8);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
@@ -41,6 +41,22 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ project, onC
   const [hoverPosition, setHoverPosition] = useState<number>(0);
   const [centerAction, setCenterAction] = useState<'play' | 'pause' | null>(null);
   const [showVolumeSlider, setShowVolumeSlider] = useState<boolean>(false);
+  const [currentTimeStr, setCurrentTimeStr] = useState<string>('9:41');
+
+  // Set real clock for iPhone status bar
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const formattedHours = hours % 12 || 12;
+      const formattedMins = minutes < 10 ? `0${minutes}` : minutes;
+      setCurrentTimeStr(`${formattedHours}:${formattedMins}`);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Auto-hide controls
   const resetHideTimer = useCallback(() => {
@@ -52,7 +68,7 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ project, onC
       hideTimerRef.current = window.setTimeout(() => {
         setShowControls(false);
         setShowVolumeSlider(false);
-      }, 2400);
+      }, 2600);
     }
   }, [isPlaying, isScrubbing]);
 
@@ -71,9 +87,19 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ project, onC
   const togglePlay = useCallback(() => {
     if (!videoRef.current) return;
     if (videoRef.current.paused || videoRef.current.ended) {
-      videoRef.current.play();
-      setIsPlaying(true);
-      setCenterAction('play');
+      videoRef.current.play().then(() => {
+        setIsPlaying(true);
+        setCenterAction('play');
+      }).catch(() => {
+        // Fallback to muted play if browser blocks
+        if (videoRef.current) {
+          videoRef.current.muted = true;
+          setIsMuted(true);
+          videoRef.current.play();
+          setIsPlaying(true);
+          setCenterAction('play');
+        }
+      });
     } else {
       videoRef.current.pause();
       setIsPlaying(false);
@@ -116,9 +142,9 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ project, onC
 
   // Toggle fullscreen
   const toggleFullscreen = () => {
-    if (!containerRef.current) return;
+    if (!phoneRef.current) return;
     if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen?.().catch(() => {});
+      phoneRef.current.requestFullscreen?.().catch(() => {});
     } else {
       document.exitFullscreen?.().catch(() => {});
     }
@@ -245,11 +271,22 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ project, onC
   const onLoadedMetadata = () => {
     if (!videoRef.current) return;
     setDuration(videoRef.current.duration);
+    
+    // Auto-play reliably: try unmuted, fallback to muted if browser blocks
     videoRef.current.play().then(() => {
       setIsPlaying(true);
       resetHideTimer();
     }).catch(() => {
-      setIsPlaying(false);
+      if (videoRef.current) {
+        videoRef.current.muted = true;
+        setIsMuted(true);
+        videoRef.current.play().then(() => {
+          setIsPlaying(true);
+          resetHideTimer();
+        }).catch(() => {
+          setIsPlaying(false);
+        });
+      }
     });
   };
 
@@ -258,215 +295,290 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ project, onC
   if (!project || !project.videoUrl) return null;
 
   return (
-    <div className="vm-backdrop" onClick={onClose}>
+    <div className="iphone-modal-backdrop" onClick={onClose}>
+      {/* Outer Close Button */}
+      <button 
+        className="iphone-external-close" 
+        onClick={onClose} 
+        aria-label="Close modal"
+        title="Close (Esc)"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      {/* Realistic iPhone Chassis */}
       <div 
-        ref={containerRef}
-        className={`vm-container ${isFullscreen ? 'vm-fullscreen' : ''}`}
+        ref={phoneRef}
+        className={`iphone-device ${isFullscreen ? 'iphone-fullscreen' : ''}`}
         onClick={(e) => e.stopPropagation()}
         onMouseMove={resetHideTimer}
         onTouchStart={resetHideTimer}
       >
-        {/* Glow ambient background aura */}
-        <div className="vm-ambient-glow" />
+        {/* Hardware side buttons */}
+        <div className="iphone-btn-action" title="Action Button" />
+        <div className="iphone-btn-volume-up" title="Volume Up" />
+        <div className="iphone-btn-volume-down" title="Volume Down" />
+        <div className="iphone-btn-power" title="Side Button" />
 
-        {/* Video Screen */}
-        <div className="vm-video-wrapper" onClick={togglePlay}>
-          <video
-            ref={videoRef}
-            src={project.videoUrl}
-            poster={project.posterUrl}
-            playsInline
-            loop
-            className="vm-video-element"
-            onTimeUpdate={onTimeUpdate}
-            onLoadedMetadata={onLoadedMetadata}
-            onEnded={() => setIsPlaying(false)}
-          />
+        {/* Antenna bands */}
+        <div className="iphone-antenna iphone-antenna-tl" />
+        <div className="iphone-antenna iphone-antenna-tr" />
+        <div className="iphone-antenna iphone-antenna-bl" />
+        <div className="iphone-antenna iphone-antenna-br" />
 
-          {/* Animated Play/Pause Center Glyph */}
-          {centerAction && (
-            <div 
-              key={centerAction + currentTime} 
-              className="vm-center-glyph"
-              onAnimationEnd={() => setCenterAction(null)}
-            >
-              {centerAction === 'play' ? (
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <polygon points="6 3 20 12 6 21 6 3" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <rect x="6" y="4" width="4" height="16" rx="2" />
-                  <rect x="14" y="4" width="4" height="16" rx="2" />
-                </svg>
-              )}
-            </div>
-          )}
-        </div>
+        {/* Top speaker mic slit in bezel */}
+        <div className="iphone-speaker-slit" />
 
-        {/* Minimal Floating Top Header */}
-        <div className={`vm-top-bar ${showControls ? 'vm-visible' : 'vm-hidden'}`}>
-          <div className="vm-meta-pill">
-            <span className="vm-category-dot" />
-            <span className="vm-meta-category">{project.category}</span>
-            <span className="vm-meta-divider">/</span>
-            <span className="vm-meta-title">{project.title}</span>
-          </div>
+        {/* The Inner iPhone Screen */}
+        <div className="iphone-screen">
+          {/* Edge-to-edge Video */}
+          <div className="iphone-video-container" onClick={togglePlay}>
+            <video
+              ref={videoRef}
+              src={project.videoUrl}
+              poster={project.posterUrl}
+              playsInline
+              loop
+              className="iphone-video"
+              onTimeUpdate={onTimeUpdate}
+              onLoadedMetadata={onLoadedMetadata}
+              onEnded={() => setIsPlaying(false)}
+            />
 
-          <button 
-            className="vm-close-btn" 
-            onClick={onClose} 
-            aria-label="Close video player"
-            title="Close (Esc)"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-
-        {/* Minimal Floating Bottom Dock */}
-        <div 
-          className={`vm-bottom-dock ${showControls ? 'vm-visible' : 'vm-hidden'}`}
-          onMouseEnter={() => {
-            if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
-          }}
-          onMouseLeave={resetHideTimer}
-        >
-          {/* Scrubber Progress Bar */}
-          <div 
-            ref={progressRef}
-            className="vm-progress-track"
-            onMouseDown={(e) => handleSeekStart(e.clientX)}
-            onTouchStart={(e) => handleSeekStart(e.touches[0].clientX)}
-            onMouseMove={handleProgressHover}
-            onMouseLeave={() => setHoverTime(null)}
-          >
-            <div className="vm-buffer-bar" style={{ width: `${buffered}%` }} />
-            <div className="vm-progress-fill" style={{ width: `${progressPercent}%` }}>
-              <div className="vm-scrub-thumb" />
-            </div>
-
-            {hoverTime !== null && (
-              <div className="vm-hover-tooltip" style={{ left: `${hoverPosition}%` }}>
-                {formatTime(hoverTime)}
+            {/* Tap Ripple Play/Pause Indicator */}
+            {centerAction && (
+              <div 
+                key={centerAction + currentTime} 
+                className="iphone-center-glyph"
+                onAnimationEnd={() => setCenterAction(null)}
+              >
+                {centerAction === 'play' ? (
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="6 3 20 12 6 21 6 3" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16" rx="2" />
+                    <rect x="14" y="4" width="4" height="16" rx="2" />
+                  </svg>
+                )}
               </div>
             )}
           </div>
 
-          {/* Controls row */}
-          <div className="vm-controls-row">
-            <div className="vm-controls-left">
-              {/* Play/Pause Button */}
-              <button 
-                className="vm-icon-btn vm-play-btn" 
-                onClick={togglePlay}
-                aria-label={isPlaying ? "Pause video" : "Play video"}
-                title={isPlaying ? "Pause (Space)" : "Play (Space)"}
-              >
-                {isPlaying ? (
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <rect x="6" y="5" width="4" height="14" rx="2" />
-                    <rect x="14" y="5" width="4" height="14" rx="2" />
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <polygon points="6 4 20 12 6 20 6 4" />
-                  </svg>
-                )}
-              </button>
+          {/* iOS Top Status Bar */}
+          <div className="iphone-status-bar">
+            {/* Left Clock */}
+            <span className="iphone-clock">{currentTimeStr}</span>
 
-              {/* Time display */}
-              <div className="vm-time-display">
-                <span className="vm-time-current">{formatTime(currentTime)}</span>
-                <span className="vm-time-separator">/</span>
-                <span className="vm-time-duration">{formatTime(duration)}</span>
-              </div>
+            {/* Center Dynamic Island */}
+            <div className={`iphone-dynamic-island ${isPlaying ? 'island-playing' : ''}`}>
+              {/* Camera Lens */}
+              <div className="iphone-island-lens" />
+              {/* Sensor dot */}
+              <div className="iphone-island-sensor" />
+
+              {/* Dynamic Sound Wave Indicator */}
+              {isPlaying && !isMuted && (
+                <div className="iphone-island-wave">
+                  <span className="wave-bar wave-1" />
+                  <span className="wave-bar wave-2" />
+                  <span className="wave-bar wave-3" />
+                </div>
+              )}
             </div>
 
-            <div className="vm-controls-right">
-              {/* Playback rate pill */}
-              <button 
-                className="vm-pill-btn" 
-                onClick={cyclePlaybackRate}
-                title="Playback Speed"
-                aria-label={`Playback speed: ${playbackRate}x`}
-              >
-                {playbackRate}x
-              </button>
+            {/* Right Status Icons */}
+            <div className="iphone-status-icons">
+              {/* Cellular Signal */}
+              <svg className="iphone-icon-signal" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="2" y="15" width="2.5" height="5" rx="1" />
+                <rect x="6.5" y="12" width="2.5" height="8" rx="1" />
+                <rect x="11" y="9" width="2.5" height="11" rx="1" />
+                <rect x="15.5" y="6" width="2.5" height="14" rx="1" />
+              </svg>
 
-              {/* Volume / Mute with mini slider */}
-              <div 
-                className="vm-volume-wrapper"
-                onMouseEnter={() => setShowVolumeSlider(true)}
-                onMouseLeave={() => setShowVolumeSlider(false)}
-              >
+              {/* 5G / WiFi icon */}
+              <svg className="iphone-icon-wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                <line x1="12" y1="20" x2="12.01" y2="20" strokeWidth="3"></line>
+              </svg>
+
+              {/* Battery */}
+              <div className="iphone-battery">
+                <div className="iphone-battery-fill" />
+                <div className="iphone-battery-nub" />
+              </div>
+            </div>
+          </div>
+
+          {/* Minimal Floating Project Header */}
+          <div className={`iphone-header-pill ${showControls ? 'controls-visible' : 'controls-hidden'}`}>
+            <div className="iphone-pill-inner">
+              <span className="iphone-category-tag">{project.category}</span>
+              <span className="iphone-tag-separator">•</span>
+              <span className="iphone-title-tag">{project.title}</span>
+            </div>
+
+            <button 
+              className="iphone-internal-close"
+              onClick={onClose}
+              aria-label="Close video"
+              title="Close"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Minimal Floating Bottom Dock */}
+          <div 
+            className={`iphone-bottom-dock ${showControls ? 'controls-visible' : 'controls-hidden'}`}
+            onMouseEnter={() => {
+              if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+            }}
+            onMouseLeave={resetHideTimer}
+          >
+            {/* Scrubber Progress Bar */}
+            <div 
+              ref={progressRef}
+              className="iphone-progress-track"
+              onMouseDown={(e) => handleSeekStart(e.clientX)}
+              onTouchStart={(e) => handleSeekStart(e.touches[0].clientX)}
+              onMouseMove={handleProgressHover}
+              onMouseLeave={() => setHoverTime(null)}
+            >
+              <div className="iphone-buffer-bar" style={{ width: `${buffered}%` }} />
+              <div className="iphone-progress-fill" style={{ width: `${progressPercent}%` }}>
+                <div className="iphone-scrub-thumb" />
+              </div>
+
+              {hoverTime !== null && (
+                <div className="iphone-hover-tooltip" style={{ left: `${hoverPosition}%` }}>
+                  {formatTime(hoverTime)}
+                </div>
+              )}
+            </div>
+
+            {/* Controls Row */}
+            <div className="iphone-controls-row">
+              <div className="iphone-controls-left">
+                {/* Play/Pause Button */}
                 <button 
-                  className="vm-icon-btn" 
-                  onClick={toggleMute}
-                  aria-label={isMuted || volume === 0 ? "Unmute" : "Mute"}
-                  title="Mute (M)"
+                  className="iphone-icon-btn iphone-play-btn" 
+                  onClick={togglePlay}
+                  aria-label={isPlaying ? "Pause" : "Play"}
+                  title={isPlaying ? "Pause (Space)" : "Play (Space)"}
                 >
-                  {isMuted || volume === 0 ? (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
-                      <line x1="23" y1="9" x2="17" y2="15"></line>
-                      <line x1="17" y1="9" x2="23" y2="15"></line>
-                    </svg>
-                  ) : volume < 0.5 ? (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
-                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                  {isPlaying ? (
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <rect x="6" y="5" width="4" height="14" rx="2" />
+                      <rect x="14" y="5" width="4" height="14" rx="2" />
                     </svg>
                   ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
-                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="6 4 20 12 6 20 6 4" />
                     </svg>
                   )}
                 </button>
 
-                <div className={`vm-volume-popup ${showVolumeSlider ? 'vm-vol-open' : ''}`}>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.05"
-                    value={isMuted ? 0 : volume}
-                    onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
-                    className="vm-volume-slider"
-                    aria-label="Volume level"
-                  />
+                {/* Time Display */}
+                <div className="iphone-time-readout">
+                  <span className="time-curr">{formatTime(currentTime)}</span>
+                  <span className="time-sep">/</span>
+                  <span className="time-dur">{formatTime(duration)}</span>
                 </div>
               </div>
 
-              {/* Fullscreen Toggle */}
-              <button 
-                className="vm-icon-btn" 
-                onClick={toggleFullscreen}
-                aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-                title="Fullscreen (F)"
-              >
-                {isFullscreen ? (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="4 14 10 14 10 20"></polyline>
-                    <polyline points="20 10 14 10 14 4"></polyline>
-                    <line x1="14" y1="10" x2="21" y2="3"></line>
-                    <line x1="3" y1="21" x2="10" y2="14"></line>
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <polyline points="9 21 3 21 3 15"></polyline>
-                    <line x1="21" y1="3" x2="14" y2="10"></line>
-                    <line x1="3" y1="21" x2="10" y2="14"></line>
-                  </svg>
-                )}
-              </button>
+              <div className="iphone-controls-right">
+                {/* Playback speed pill */}
+                <button 
+                  className="iphone-speed-btn" 
+                  onClick={cyclePlaybackRate}
+                  title="Playback Speed"
+                  aria-label={`Speed: ${playbackRate}x`}
+                >
+                  {playbackRate}x
+                </button>
+
+                {/* Volume / Mute */}
+                <div 
+                  className="iphone-volume-group"
+                  onMouseEnter={() => setShowVolumeSlider(true)}
+                  onMouseLeave={() => setShowVolumeSlider(false)}
+                >
+                  <button 
+                    className="iphone-icon-btn" 
+                    onClick={toggleMute}
+                    aria-label={isMuted || volume === 0 ? "Unmute" : "Mute"}
+                    title="Mute (M)"
+                  >
+                    {isMuted || volume === 0 ? (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                      </svg>
+                    ) : volume < 0.5 ? (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                      </svg>
+                    )}
+                  </button>
+
+                  <div className={`iphone-vol-slider-pop ${showVolumeSlider ? 'vol-active' : ''}`}>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.05"
+                      value={isMuted ? 0 : volume}
+                      onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                      className="iphone-vertical-slider"
+                      aria-label="Volume slider"
+                    />
+                  </div>
+                </div>
+
+                {/* Fullscreen Button */}
+                <button 
+                  className="iphone-icon-btn" 
+                  onClick={toggleFullscreen}
+                  aria-label={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                  title="Fullscreen (F)"
+                >
+                  {isFullscreen ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="4 14 10 14 10 20"></polyline>
+                      <polyline points="20 10 14 10 14 4"></polyline>
+                      <line x1="14" y1="10" x2="21" y2="3"></line>
+                      <line x1="3" y1="21" x2="10" y2="14"></line>
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <polyline points="9 21 3 21 3 15"></polyline>
+                      <line x1="21" y1="3" x2="14" y2="10"></line>
+                      <line x1="3" y1="21" x2="10" y2="14"></line>
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
+
+          {/* Classic iOS Home Bar Indicator */}
+          <div className="iphone-home-indicator" />
         </div>
       </div>
     </div>

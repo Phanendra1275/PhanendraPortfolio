@@ -10,6 +10,7 @@ export interface ProjectItem {
   posterUrl?: string;
   imageUrl?: string;
   description?: string;
+  videoType?: 'short' | 'long';
 }
 
 interface AllWorksModalProps {
@@ -60,50 +61,26 @@ export const AllWorksModal: React.FC<AllWorksModalProps> = ({
 
   if (!isOpen) return null;
 
-  const categories = ['All', 'Video Reels', 'UI/UX Design'];
+  const categories = ['All', 'Short Form', 'Long Form Videos'];
 
   const getCategoryCount = (cat: string) => {
     if (cat === 'All') return projects.length;
-    if (cat === 'Video Reels') {
-      return projects.filter(p => 
-        p.category.toLowerCase().includes('video') || 
-        p.title.toLowerCase().includes('video') || 
-        p.title.toLowerCase().includes('real estate') || 
-        p.category.toLowerCase().includes('promo')
-      ).length;
+    if (cat === 'Short Form') {
+      return projects.filter(p => p.videoType === 'short').length;
     }
-    if (cat === 'UI/UX Design') {
-      return projects.filter(p => 
-        p.category.toLowerCase().includes('ui') || 
-        p.category.toLowerCase().includes('ux') || 
-        p.category.toLowerCase().includes('visual') || 
-        p.title.toLowerCase().includes('starter') || 
-        p.title.toLowerCase().includes('growth') || 
-        p.title.toLowerCase().includes('design')
-      ).length;
+    if (cat === 'Long Form Videos') {
+      return projects.filter(p => p.videoType === 'long').length;
     }
     return 0;
   };
 
   const filteredProjects = projects.filter((project) => {
     if (activeCategory === 'All') return true;
-    if (activeCategory === 'Video Reels') {
-      return (
-        project.category.toLowerCase().includes('video') ||
-        project.title.toLowerCase().includes('video') ||
-        project.title.toLowerCase().includes('real estate') ||
-        project.category.toLowerCase().includes('promo')
-      );
+    if (activeCategory === 'Short Form') {
+      return project.videoType === 'short';
     }
-    if (activeCategory === 'UI/UX Design') {
-      return (
-        project.category.toLowerCase().includes('ui') ||
-        project.category.toLowerCase().includes('ux') ||
-        project.category.toLowerCase().includes('visual') ||
-        project.title.toLowerCase().includes('starter') ||
-        project.title.toLowerCase().includes('growth') ||
-        project.title.toLowerCase().includes('design')
-      );
+    if (activeCategory === 'Long Form Videos') {
+      return project.videoType === 'long';
     }
     return true;
   });

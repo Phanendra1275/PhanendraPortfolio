@@ -268,26 +268,57 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ project, onC
     }
   };
 
+  // Trigger play immediately whenever project or videoUrl changes
+  useEffect(() => {
+    if (videoRef.current && project?.videoUrl) {
+      videoRef.current.currentTime = 0;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+            resetHideTimer();
+          })
+          .catch(() => {
+            // If browser blocks unmuted playback, mute and play
+            if (videoRef.current) {
+              videoRef.current.muted = true;
+              setIsMuted(true);
+              videoRef.current.play().then(() => {
+                setIsPlaying(true);
+                resetHideTimer();
+              }).catch(() => {
+                setIsPlaying(false);
+              });
+            }
+          });
+      }
+    }
+  }, [project?.id, project?.videoUrl, resetHideTimer]);
+
   const onLoadedMetadata = () => {
     if (!videoRef.current) return;
     setDuration(videoRef.current.duration);
     
     // Auto-play reliably: try unmuted, fallback to muted if browser blocks
-    videoRef.current.play().then(() => {
-      setIsPlaying(true);
-      resetHideTimer();
-    }).catch(() => {
-      if (videoRef.current) {
-        videoRef.current.muted = true;
-        setIsMuted(true);
-        videoRef.current.play().then(() => {
-          setIsPlaying(true);
-          resetHideTimer();
-        }).catch(() => {
-          setIsPlaying(false);
-        });
-      }
-    });
+    const playPromise = videoRef.current.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        setIsPlaying(true);
+        resetHideTimer();
+      }).catch(() => {
+        if (videoRef.current) {
+          videoRef.current.muted = true;
+          setIsMuted(true);
+          videoRef.current.play().then(() => {
+            setIsPlaying(true);
+            resetHideTimer();
+          }).catch(() => {
+            setIsPlaying(false);
+          });
+        }
+      });
+    }
   };
 
   const progressPercent = duration ? (currentTime / duration) * 100 : 0;
@@ -340,12 +371,15 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({ project, onC
               ref={videoRef}
               src={project.videoUrl}
               poster={project.posterUrl}
+              autoPlay
               playsInline
               loop
               className="iphone-video"
               onTimeUpdate={onTimeUpdate}
               onLoadedMetadata={onLoadedMetadata}
               onEnded={() => setIsPlaying(false)}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
             />
 
             {/* Tap Ripple Play/Pause Indicator */}

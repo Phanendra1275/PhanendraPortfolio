@@ -18,11 +18,12 @@ const ProjectShowcase = () => {
     {
       id: 1,
       title: "Growth Pack",
-      category: "UI/UX Design",
+      category: "Healthcare Case Study",
       imageClass: "project-img-1",
       videoUrl: "/assets/video2.mp4",
       posterUrl: "/assets/medical-video.jpg",
-      description: "High-converting healthcare growth consultation reel & UI showcase."
+      description: "In-depth healthcare growth consultation reel & breakdown.",
+      videoType: 'long'
     },
     {
       id: 2,
@@ -31,32 +32,36 @@ const ProjectShowcase = () => {
       imageClass: "project-img-2",
       videoUrl: "/assets/video.mp4",
       posterUrl: "/assets/medical-promo.jpg",
-      description: "Medical doctor promo video with dynamic motion pacing and captions."
+      description: "Medical doctor promo video with dynamic motion pacing and captions.",
+      videoType: 'short'
     },
     {
       id: 3,
       title: "Starter Pack",
-      category: "UI Project",
+      category: "UI Motion Reel",
       imageClass: "project-img-3",
       videoUrl: "/assets/DEMO.mp4",
       posterUrl: "/assets/dashboard-ui-v2.jpg",
-      description: "Modern dark financial dashboard with charts, analytics, and animations."
+      description: "Modern dark financial dashboard with charts, analytics, and animations.",
+      videoType: 'short'
     },
     {
       id: 4,
       title: "Real Estate Editing",
-      category: "Video Editing",
+      category: "Reel Walkthrough",
       imageClass: "project-img-4",
       videoUrl: "/assets/Demo 2.mp4",
-      description: "Luxury interior walkthrough before & after color correction & grading."
+      description: "Luxury interior walkthrough before & after color correction & grading.",
+      videoType: 'short'
     },
     {
       id: 5,
       title: "Ui Designing",
-      category: "Visual Identity",
+      category: "Product Design",
       imageClass: "project-img-5",
       imageUrl: "/assets/vastra-alankara.png",
-      description: "Vastra Alankara ethnic fashion e-commerce mobile application design."
+      description: "Vastra Alankara ethnic fashion e-commerce mobile application design.",
+      videoType: 'long'
     }
   ];
 
@@ -247,14 +252,6 @@ const ProjectShowcase = () => {
 
 
 
-      {/* Minimal Custom Video Modal */}
-      {playingVideoId !== null && (
-        <VideoPlayerModal
-          project={projects.find(p => p.id === playingVideoId) || null}
-          onClose={() => setPlayingVideoId(null)}
-        />
-      )}
-
       {/* All Works Gallery Modal */}
       <AllWorksModal
         isOpen={isAllWorksOpen}
@@ -266,6 +263,14 @@ const ProjectShowcase = () => {
           }
         }}
       />
+
+      {/* iPhone Frame Video Player Modal */}
+      {playingVideoId !== null && (
+        <VideoPlayerModal
+          project={projects.find(p => p.id === playingVideoId) || null}
+          onClose={() => setPlayingVideoId(null)}
+        />
+      )}
       
     </section>
   );

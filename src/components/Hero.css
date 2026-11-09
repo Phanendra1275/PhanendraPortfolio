@@ -158,16 +158,7 @@
 }
 
 .hero-flare {
-  position: absolute;
-  bottom: 0;
-  right: -100px;
-  width: 400px;
-  height: 100px;
-  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, rgba(100, 150, 255, 0.4) 40%, transparent 70%);
-  filter: blur(20px);
-  transform: rotate(-15deg);
-  z-index: 8;
-  opacity: 0.6;
+  display: none;
 }
 
 @keyframes float {

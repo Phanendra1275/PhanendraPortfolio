@@ -137,7 +137,7 @@
 }
 
 .icon-figma {
-  top: 35%;
+  top: 28%;
   left: 28%;
   right: auto;
   bottom: auto;
@@ -147,14 +147,14 @@
   border-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 255, 255, 0.1);
   border-radius: 24px;
-  padding: 12px;
+  padding: 10px;
   animation: floatFigma 7.5s ease-in-out infinite;
   animation-delay: -2.5s;
 }
 
 .icon-figma .icon-placeholder {
-  width: 68px;
-  height: 68px;
+  width: 56px;
+  height: 56px;
 }
 
 .hero-flare {
@@ -270,13 +270,13 @@
     --rot: 10deg;
   }
   .icon-figma { 
-    top: 22%; 
+    top: 16%; 
     left: 34%; 
     right: auto; 
     bottom: auto; 
     z-index: 8; /* Keep the logo visible on top */
     --rot: -5deg;
-    padding: 8px;
+    padding: 6px;
     border-radius: 20px;
   }
   
@@ -289,8 +289,8 @@
     font-size: 24px;
   }
   .icon-figma .icon-placeholder {
-    width: 52px;
-    height: 52px;
+    width: 44px;
+    height: 44px;
   }
   
   .hero-flare {
@@ -313,8 +313,8 @@
   }
   
   .icon-figma .icon-placeholder {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
   }
 }
 

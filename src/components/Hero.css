@@ -137,19 +137,20 @@
 
 .icon-figma {
   bottom: 30%;
-  right: 20%;
+  right: 26%;
   --rot: -5deg;
   background: rgba(240, 240, 250, 0.9);
   border-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 255, 255, 0.1);
-  border-radius: 32px;
-  padding: 20px;
-  animation-delay: -4s;
+  border-radius: 24px;
+  padding: 12px;
+  animation: floatFigma 7.5s ease-in-out infinite;
+  animation-delay: -2.5s;
 }
 
 .icon-figma .icon-placeholder {
-  width: 92px;
-  height: 92px;
+  width: 68px;
+  height: 68px;
 }
 
 .hero-flare {
@@ -166,9 +167,13 @@
 }
 
 @keyframes float {
-  0% { transform: translateY(0px) rotate(var(--rot)); }
-  50% { transform: translateY(-15px) rotate(var(--rot)); }
-  100% { transform: translateY(0px) rotate(var(--rot)); }
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--rot)); }
+  50% { transform: translate3d(0, -10px, 0) rotate(var(--rot)); }
+}
+
+@keyframes floatFigma {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-5deg); }
+  50% { transform: translate3d(0, -8px, 0) rotate(-2deg); }
 }
 
 @keyframes heroFadeUp {
@@ -204,11 +209,11 @@
   
   .icon-ae { left: 5%; --rot: -10deg; }
   .icon-pr { right: 5%; --rot: 15deg; }
-  .icon-figma { right: 10%; --rot: -5deg; }
+  .icon-figma { right: 16%; --rot: -5deg; }
   
   .floating-icon { padding: 10px; }
   .icon-placeholder { width: 50px; height: 50px; font-size: 28px; }
-  .icon-figma .icon-placeholder { width: 75px; height: 75px; }
+  .icon-figma .icon-placeholder { width: 60px; height: 60px; }
 }
 
 @media (max-width: 768px) {
@@ -261,10 +266,12 @@
     --rot: 10deg;
   }
   .icon-figma { 
-    right: 15%; 
-    bottom: 15%; 
+    right: 10%; 
+    bottom: 26%; 
     z-index: 7; /* In front */
     --rot: -5deg;
+    padding: 8px;
+    border-radius: 20px;
   }
   
   .floating-icon {
@@ -276,8 +283,8 @@
     font-size: 24px;
   }
   .icon-figma .icon-placeholder {
-    width: 60px;
-    height: 60px;
+    width: 52px;
+    height: 52px;
   }
   
   .hero-flare {
@@ -300,8 +307,8 @@
   }
   
   .icon-figma .icon-placeholder {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
   }
 }
 

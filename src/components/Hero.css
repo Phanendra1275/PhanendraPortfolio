@@ -117,7 +117,7 @@
 .icon-placeholder.pr { color: #E89BFF; }
 
 .icon-ae {
-  top: 43%;
+  top: 35%;
   left: 4%;
   --rot: -10deg;
   z-index: 5;
@@ -137,7 +137,7 @@
 }
 
 .icon-figma {
-  bottom: 30%;
+  bottom: 38%;
   right: 26%;
   --rot: -5deg;
   z-index: 5;
@@ -256,7 +256,7 @@
   
   .icon-ae { 
     left: 10%; 
-    top: 30%; 
+    top: 22%; 
     z-index: 5; /* Goes BEHIND the person to create 3D depth */
     --rot: -15deg;
     opacity: 0.8;
@@ -269,7 +269,7 @@
   }
   .icon-figma { 
     right: 10%; 
-    bottom: 26%; 
+    bottom: 36%; 
     z-index: 5; /* Behind the person and laptop */
     --rot: -5deg;
     padding: 8px;

@@ -18,7 +18,7 @@ const Hero = () => {
       <div className="hero-visuals">
         {/* Main person image */}
         <div className="person-image-container">
-          <img src="/assets/hero-person.png" alt="Phanendra holding camera" className="hero-person-img" />
+          <img src="/assets/profile-cutout.png" alt="Phanendra" className="hero-person-img" />
         </div>
         
         {/* Floating Icons */}

@@ -261,12 +261,10 @@
     --rot: 10deg;
   }
   .icon-figma { 
-    right: 8%; 
-    bottom: 28%; 
+    right: 15%; 
+    bottom: 15%; 
     z-index: 7; /* In front */
     --rot: -5deg;
-    padding: 10px;
-    border-radius: 24px;
   }
   
   .floating-icon {
@@ -278,8 +276,8 @@
     font-size: 24px;
   }
   .icon-figma .icon-placeholder {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
   }
   
   .hero-flare {
@@ -302,8 +300,8 @@
   }
   
   .icon-figma .icon-placeholder {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
   }
 }
 

@@ -137,7 +137,7 @@
 }
 
 .icon-figma {
-  top: 28%;
+  top: 20%;
   left: 28%;
   right: auto;
   bottom: auto;
@@ -153,8 +153,8 @@
 }
 
 .icon-figma .icon-placeholder {
-  width: 56px;
-  height: 56px;
+  width: 46px;
+  height: 46px;
 }
 
 .hero-flare {
@@ -270,7 +270,7 @@
     --rot: 10deg;
   }
   .icon-figma { 
-    top: 16%; 
+    top: 10%; 
     left: 34%; 
     right: auto; 
     bottom: auto; 
@@ -289,8 +289,8 @@
     font-size: 24px;
   }
   .icon-figma .icon-placeholder {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
   }
   
   .hero-flare {
@@ -313,8 +313,8 @@
   }
   
   .icon-figma .icon-placeholder {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
   }
 }
 

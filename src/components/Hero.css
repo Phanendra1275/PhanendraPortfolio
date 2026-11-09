@@ -137,8 +137,8 @@
 }
 
 .icon-figma {
-  bottom: 43%;
-  right: 34%;
+  bottom: 48%;
+  right: 54%;
   --rot: -5deg;
   z-index: 8;
   background: rgba(240, 240, 250, 0.9);
@@ -268,8 +268,8 @@
     --rot: 10deg;
   }
   .icon-figma { 
-    right: 18%; 
-    bottom: 42%; 
+    right: 34%; 
+    bottom: 46%; 
     z-index: 8; /* Keep the logo visible on top */
     --rot: -5deg;
     padding: 8px;

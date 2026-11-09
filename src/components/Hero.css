@@ -73,10 +73,10 @@
 .person-image-container {
   position: absolute;
   bottom: 0;
-  right: 1%;
+  right: 0;
 
-  width: 88%;
-  height: 106%;
+  width: 100%;
+  height: 115%;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -136,20 +136,20 @@
 }
 
 .icon-figma {
-  bottom: 27%;
-  right: 3%;
+  bottom: 30%;
+  right: 20%;
   --rot: -5deg;
   background: rgba(240, 240, 250, 0.9);
   border-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 255, 255, 0.1);
   border-radius: 32px;
-  padding: 16px;
+  padding: 20px;
   animation-delay: -4s;
 }
 
 .icon-figma .icon-placeholder {
-  width: 76px;
-  height: 76px;
+  width: 92px;
+  height: 92px;
 }
 
 .hero-flare {

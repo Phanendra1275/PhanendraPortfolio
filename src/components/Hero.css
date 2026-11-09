@@ -137,8 +137,8 @@
 }
 
 .icon-figma {
-  bottom: 38%;
-  right: 26%;
+  bottom: 49%;
+  right: 42%;
   --rot: -5deg;
   z-index: 5;
   background: rgba(240, 240, 250, 0.9);
@@ -268,8 +268,8 @@
     --rot: 10deg;
   }
   .icon-figma { 
-    right: 10%; 
-    bottom: 36%; 
+    right: 22%; 
+    bottom: 48%; 
     z-index: 5; /* Behind the person and laptop */
     --rot: -5deg;
     padding: 8px;
